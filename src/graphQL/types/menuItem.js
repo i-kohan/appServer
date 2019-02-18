@@ -6,18 +6,21 @@ export default gql`
     title: String!
     path: String!
     iconName: String!
+    isPublic: Boolean!
   }
 
   input MenuItemCreateInput {
     title: String!
     path: String!
     iconName: String!
+    isPublic: Boolean!
   }
 
   input MenuItemEditInput {
     path: String
     title: String
     iconName: String
+    isPublic: Boolean
   }
 
   extend type Query {

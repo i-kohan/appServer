@@ -1,5 +1,5 @@
 import { PubSub } from 'apollo-server'
-import Program from "../../mongo/schemas/program"
+import Program from '../../mongo/schemas/program'
 
 const pubsub = new PubSub()
 

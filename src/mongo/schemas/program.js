@@ -1,31 +1,31 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
-const Schema = mongoose.Schema;
+const { Schema } = mongoose
 
 const ProgramSchema = new Schema({
   id: {
     type: Schema.ObjectId,
     required: true,
     unique: true,
-    auto: true
+    auto: true,
   },
   name: {
     type: String,
-    required: true
+    required: true,
   },
   description: {
     type: String,
-    required: true
+    required: true,
   },
   exercisesIds: {
     type: Array,
-    required: true
+    required: true,
   },
   isCustom: {
-    type: Boolean
-  }
-});
+    type: Boolean,
+  },
+})
 
-const Program = mongoose.model("Program", ProgramSchema);
+const Program = mongoose.model('Program', ProgramSchema)
 
-export default Program;
+export default Program

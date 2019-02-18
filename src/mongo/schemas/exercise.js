@@ -1,24 +1,24 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
-const Schema = mongoose.Schema;
+const { Schema } = mongoose
 
 const ExerciseSchema = new Schema({
   id: {
     type: Schema.ObjectId,
     required: true,
     unique: true,
-    auto: true
+    auto: true,
   },
   name: {
     type: String,
-    required: true
+    required: true,
   },
   description: {
     type: String,
-    required: true
-  }
-});
+    required: true,
+  },
+})
 
-const Exercise = mongoose.model("Exercise", ExerciseSchema);
+const Exercise = mongoose.model('Exercise', ExerciseSchema)
 
-export default Exercise;
+export default Exercise
