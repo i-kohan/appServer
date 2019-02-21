@@ -3,12 +3,6 @@ import mongoose from 'mongoose'
 const { Schema } = mongoose
 
 const ProgramSchema = new Schema({
-  id: {
-    type: Schema.ObjectId,
-    required: true,
-    unique: true,
-    auto: true,
-  },
   name: {
     type: String,
     required: true,

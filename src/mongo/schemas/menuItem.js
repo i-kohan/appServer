@@ -3,12 +3,6 @@ import mongoose from 'mongoose'
 const { Schema } = mongoose
 
 const MenuItemSchema = new Schema({
-  id: {
-    type: Schema.ObjectId,
-    required: true,
-    unique: true,
-    auto: true,
-  },
   path: {
     type: String,
     required: true,

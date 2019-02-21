@@ -2,7 +2,7 @@ import { gql } from 'apollo-server-express'
 
 export default gql`
   type Program {
-    id: ID!
+    _id: ID!
     name: String!
     description: String!
     exercisesIds: [ID!]!

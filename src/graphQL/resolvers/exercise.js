@@ -1,6 +1,5 @@
-import Exercise from '../../mongo/schemas/exercise'
+import { PubSub } from 'apollo-server'
 
-const { PubSub } = require('apollo-server')
 const pubsub = new PubSub()
 
 const EXERCISE_CREATED = 'EXERCISE_CREATED'
@@ -8,57 +7,38 @@ const EXERCISE_EDITED = 'EXERCISE_EDITED'
 
 export default {
   Query: {
-    exercise: (root, args) => {
-      return new Promise((resolve, reject) => {
-        Exercise.findOne({ id: args.id }).exec((err, res) => {
-          err ? reject(err) : resolve(res)
-        })
-      })
+    exercise: async (root, args, { models: Exercise }) => {
+      const exercise = await Exercise.findById(args.id)
+      return exercise
     },
-    exercises: () => {
-      return new Promise((resolve, reject) => {
-        Exercise.find({})
-          .populate()
-          .exec((err, res) => {
-            err ? reject(err) : resolve(res)
-          })
-      })
-    }
+    exercises: async (root, args, { models: Exercise }) => {
+      const programs = await Exercise.find({})
+      return programs
+    },
   },
   Mutation: {
-    createExercise: (root, { input }) => {
+    createExercise: async (root, { input }, { models: Exercise }) => {
       const newExercise = new Exercise({ ...input })
-      return new Promise((resolve, reject) => {
-        newExercise.save((err, res) => {
-          pubsub.publish(EXERCISE_CREATED, { exerciseCreated: res })
-          err ? reject(err) : resolve(res)
-        })
-      })
+      const exercise = await newExercise.save()
+      pubsub.publish(EXERCISE_CREATED, { exerciseCreated: exercise })
+      return exercise
     },
-    editExercise: (root, { id, input }) => {
-      return new Promise((resolve, reject) => {
-        Exercise.findOneAndUpdate({ id }, { $set: { ...input } }).exec(
-          (err, res) => {
-            pubsub.publish(EXERCISE_EDITED, { exerciseEdited: res })
-            err ? reject(err) : resolve(res)
-          }
-        )
-      })
+    editExercise: async (root, { id, input }, { models: Exercise }) => {
+      const editedExercise = await Exercise.findOneAndUpdate({ id }, { $set: { ...input } })
+      pubsub.publish(EXERCISE_EDITED, { exerciseEdited: editedExercise })
+      return editedExercise
     },
-    deleteExercise: (root, args) => {
-      return new Promise((resolve, reject) => {
-        Exercise.findOneAndRemove(args).exec((err, res) => {
-          err ? reject(err) : resolve(res)
-        })
-      })
-    }
+    deleteExercise: async (root, args, { models: Exercise }) => {
+      const removedExercise = await Exercise.findOneAndRemove(args)
+      return removedExercise
+    },
   },
   Subscription: {
     exerciseCreated: {
       subscribe: () => pubsub.asyncIterator([EXERCISE_CREATED]),
     },
     exerciseEdited: {
-      subscribe: () => pubsub.asyncIterator([EXERCISE_EDITED])
-    }
-  }
+      subscribe: () => pubsub.asyncIterator([EXERCISE_EDITED]),
+    },
+  },
 }

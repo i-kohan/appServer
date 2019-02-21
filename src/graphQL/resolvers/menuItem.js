@@ -1,37 +1,19 @@
-import MenuItem from '../../mongo/schemas/menuItem'
-
 export default {
   Query: {
-    menuItem: (root, args) => new Promise((resolve, reject) => {
-      MenuItem.findOne({ id: args.id }).exec((err, res) => {
-        if (err) {
-          reject(err)
-        }
-        resolve(res)
-      })
-    }),
-    menuItems: () => new Promise((resolve, reject) => {
-      MenuItem.find({})
-        .populate()
-        .exec((err, res) => {
-          if (err) {
-            reject(err)
-          }
-          resolve(res)
-        })
-    }),
+    menuItem: async (root, args, { models: MenuItem }) => {
+      const menuItem = await MenuItem.findOne({ id: args.id })
+      return menuItem
+    },
+    menuItems: async (root, args, { models: MenuItem }) => {
+      const menuItems = await MenuItem.find({})
+      return menuItems
+    },
   },
   Mutation: {
-    createMenuItem: (root, { input }) => {
+    createMenuItem: async (root, { input }, { models: MenuItem }) => {
       const newMenuItem = new MenuItem({ ...input })
-      return new Promise((resolve, reject) => {
-        newMenuItem.save((err, res) => {
-          if (err) {
-            reject(err)
-          }
-          resolve(res)
-        })
-      })
+      const menuItem = await newMenuItem.save()
+      return menuItem
     },
   },
   //   editExercise: (root, { id, input }) => {

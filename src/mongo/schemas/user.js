@@ -3,12 +3,6 @@ import mongoose from 'mongoose'
 const { Schema } = mongoose
 
 const UserSchema = new Schema({
-  id: {
-    type: Schema.ObjectId,
-    required: true,
-    unique: true,
-    auto: true,
-  },
   username: {
     type: String,
     required: true,

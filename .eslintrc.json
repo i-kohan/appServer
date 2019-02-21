@@ -3,7 +3,8 @@
   "rules": {
     "func-names": ["error", "never"],
     "semi": ["error","never"],
-    "import/prefer-default-export": "off"
+    "import/prefer-default-export": "off",
+    "no-underscore-dangle": "off"
   },
   "settings": {
     "import/resolver": {

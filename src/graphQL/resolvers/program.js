@@ -1,5 +1,4 @@
 import { PubSub } from 'apollo-server'
-import Program from '../../mongo/schemas/program'
 
 const pubsub = new PubSub()
 
@@ -8,58 +7,32 @@ const PROGRAM_EDITED = 'PROGRAM_EDITED'
 
 export default {
   Query: {
-    program: (root, args) => new Promise((resolve, reject) => {
-      Program.findOne({ id: args.id }).exec((err, res) => {
-        if (err) {
-          reject(err)
-        }
-        resolve(res)
-      })
-    }),
-    programs: () => new Promise((resolve, reject) => {
-      Program.find({})
-        .populate()
-        .exec((err, res) => {
-          if (err) {
-            reject(err)
-          }
-          resolve(res)
-        })
-    }),
+    program: async (root, args, { models: Program }) => {
+      const program = await Program.findOne({ id: args.id })
+      return program
+    },
+    programs: async (root, args, { models: Program }) => {
+      const programs = await Program.find({})
+      return programs
+    },
   },
   Mutation: {
-    createProgram: (root, { input }) => {
+    createProgram: async (root, { input }, { models: Program }) => {
       const isCustom = input.isCustom || true
       const newProgram = new Program({ ...input, isCustom })
-      return new Promise((resolve, reject) => {
-        newProgram.save((err, res) => {
-          pubsub.publish(PROGRAM_CREATED, { programCreated: res })
-          if (err) {
-            reject(err)
-          }
-          resolve(res)
-        })
-      })
+      const program = await newProgram.save()
+      pubsub.publish(PROGRAM_CREATED, { programCreated: program })
+      return program
     },
-    editProgram: (root, { id, input }) => new Promise((resolve, reject) => {
-      Program.findOneAndUpdate({ id }, { $set: { ...input } }).exec(
-        (err, res) => {
-          pubsub.publish(PROGRAM_EDITED, { programEdited: res })
-          if (err) {
-            reject(err)
-          }
-          resolve(res)
-        },
-      )
-    }),
-    deleteProgram: (root, args) => new Promise((resolve, reject) => {
-      Program.findOneAndRemove(args).exec((err, res) => {
-        if (err) {
-          reject(err)
-        }
-        resolve(res)
-      })
-    }),
+    editProgram: async (root, { id, input }, { models: Program }) => {
+      const program = await Program.findOneAndUpdate({ id }, { $set: { ...input } })
+      pubsub.publish(PROGRAM_EDITED, { programEdited: program })
+      return program
+    },
+    deleteProgram: async (root, args, { models: Program }) => {
+      const removedProgram = await Program.findOneAndRemove(args)
+      return removedProgram
+    },
   },
   Subscription: {
     programCreated: {

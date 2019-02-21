@@ -2,7 +2,7 @@ import { gql } from 'apollo-server-express'
 
 export default gql`
   type MenuItem {
-    id: ID!
+    _id: ID!
     title: String!
     path: String!
     iconName: String!

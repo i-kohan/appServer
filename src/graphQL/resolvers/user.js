@@ -1,18 +1,12 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import User from '../../mongo/schemas/user'
 
 export default {
   Query: {
-    currentUser: (root, args, { user }) => { console.log(user); return {
-      "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjNjY5NTI1MzRkMjZmNjI0OGJjYTEyZCIsImlhdCI6MTU1MDQ4NzM1NX0.kA5Dbu7ny5DL7-N243s8l-XyzMbbtM-hsKo02RQIEIA",
-      "username": "1235",
-      "email": "Hello@gmail.com",
-      "id": "5c66952534d26f6248bca12d"
-    }},
+    currentUser: (root, args, { user }) => user,
   },
   Mutation: {
-    login: async (root, { input }, context) => {
+    login: async (root, { input }, { JWT_SECRETE, models: { User } }) => {
       const { username, password } = input
       const user = await User.findOne({ username })
       if (!user) {
@@ -23,11 +17,11 @@ export default {
         throw new Error('Password is invalid')
       }
 
-      user.jwt = jwt.sign({ id: user.id }, context.JWT_SECRETE)
+      user.jwt = jwt.sign({ _id: user._id }, JWT_SECRETE)
 
       return user
     },
-    signup: async (root, { input }, context) => {
+    signup: async (root, { input }, { JWT_SECRETE, models: { User } }) => {
       const { email, username, password } = input
       const existingUser = await User.findOne({ username })
       if (existingUser) {
@@ -41,7 +35,7 @@ export default {
         email,
       })
       const createdUser = await user.save()
-      createdUser.jwt = jwt.sign({ id: user.id }, context.JWT_SECRETE)
+      createdUser.jwt = jwt.sign({ _id: user._id }, JWT_SECRETE)
       return createdUser
     },
   },

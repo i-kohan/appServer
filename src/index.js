@@ -2,10 +2,14 @@ import express from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
 import jwt from 'jsonwebtoken'
-import { ApolloServer, AuthenticationError } from 'apollo-server-express'
+import {
+  ApolloServer,
+  // AuthenticationError
+} from 'apollo-server-express'
 import { createServer } from 'http'
+import * as Promise from 'bluebird'
 import { typeDefs, resolvers } from './graphQL'
-import User from './mongo/schemas/user'
+import Models from './mongo/schemas'
 
 const PORT = process.env.PORT || '4000'
 const JWT_SECRETE = 'super-secret'
@@ -14,11 +18,11 @@ const password = 'password1'
 const db = `mongodb://${login}:${password}@ds219130.mlab.com:19130/example`
 
 // Connect to MongoDB with Mongoose.
+mongoose.Promise = Promise
 mongoose.connect(
   db,
   {
-    useCreateIndex: true,
-    useNewUrlParser: true,
+    useMongoClient: true,
   },
 )
   .then(() => console.log('MongoDB connected'))
@@ -39,9 +43,8 @@ const getUser = async (authorization) => {
       }
     }))
     if (ok) {
-      console.log(result)
-      const user = await User.findOne({ id: result.id })
-      return { ...user, jwt: token }
+      const user = await Models.User.findById(result._id)
+      return user ? { ...user.toObject(), jwt: token } : null
     }
     return null
   }
@@ -54,10 +57,11 @@ const server = new ApolloServer({
   context: async ({ req }) => {
     const token = req.headers.authorization || ''
     const user = await getUser(token)
-    if (!user) {
-      throw new AuthenticationError('You must be logged in!')
-    }
+    // if (!user) {
+    //   throw new AuthenticationError('You must be logged in!')
+    // }
     return {
+      models: Models,
       user,
       JWT_SECRETE,
     }
