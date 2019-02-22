@@ -7,28 +7,28 @@ const EXERCISE_EDITED = 'EXERCISE_EDITED'
 
 export default {
   Query: {
-    exercise: async (root, args, { models: Exercise }) => {
+    exercise: async (root, args, { models: { Exercise } }) => {
       const exercise = await Exercise.findById(args.id)
       return exercise
     },
-    exercises: async (root, args, { models: Exercise }) => {
+    exercises: async (root, args, { models: { Exercise } }) => {
       const programs = await Exercise.find({})
       return programs
     },
   },
   Mutation: {
-    createExercise: async (root, { input }, { models: Exercise }) => {
+    createExercise: async (root, { input }, { models: { Exercise } }) => {
       const newExercise = new Exercise({ ...input })
       const exercise = await newExercise.save()
       pubsub.publish(EXERCISE_CREATED, { exerciseCreated: exercise })
       return exercise
     },
-    editExercise: async (root, { id, input }, { models: Exercise }) => {
+    editExercise: async (root, { id, input }, { models: { Exercise } }) => {
       const editedExercise = await Exercise.findOneAndUpdate({ id }, { $set: { ...input } })
       pubsub.publish(EXERCISE_EDITED, { exerciseEdited: editedExercise })
       return editedExercise
     },
-    deleteExercise: async (root, args, { models: Exercise }) => {
+    deleteExercise: async (root, args, { models: { Exercise } }) => {
       const removedExercise = await Exercise.findOneAndRemove(args)
       return removedExercise
     },

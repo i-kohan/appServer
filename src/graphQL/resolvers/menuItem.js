@@ -1,16 +1,16 @@
 export default {
   Query: {
-    menuItem: async (root, args, { models: MenuItem }) => {
+    menuItem: async (root, args, { models: { MenuItem } }) => {
       const menuItem = await MenuItem.findOne({ id: args.id })
       return menuItem
     },
-    menuItems: async (root, args, { models: MenuItem }) => {
+    menuItems: async (root, args, { models: { MenuItem } }) => {
       const menuItems = await MenuItem.find({})
       return menuItems
     },
   },
   Mutation: {
-    createMenuItem: async (root, { input }, { models: MenuItem }) => {
+    createMenuItem: async (root, { input }, { models: { MenuItem } }) => {
       const newMenuItem = new MenuItem({ ...input })
       const menuItem = await newMenuItem.save()
       return menuItem
