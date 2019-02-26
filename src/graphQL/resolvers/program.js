@@ -1,4 +1,6 @@
 import { PubSub } from 'apollo-server'
+import { buildMongoConditionsFromFilters } from '@entria/graphql-mongo-helpers'
+import { programsMapping } from '../mappings'
 
 const pubsub = new PubSub()
 
@@ -12,7 +14,8 @@ export default {
       return program
     },
     programs: async (root, args, { models: { Program } }) => {
-      const programs = await Program.find({})
+      const filterResult = buildMongoConditionsFromFilters(null, args.filter, programsMapping)
+      const programs = await Program.find(filterResult.conditions)
       return programs
     },
   },

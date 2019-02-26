@@ -8,6 +8,11 @@ export default gql`
     exercisesIds: [ID!]!
     isCustom: Boolean
   }
+
+  input ProgramFilter {
+    name: String
+    description: String
+  }
   
   input ProgramCreateInput {
     name: String!
@@ -23,7 +28,7 @@ export default gql`
 
   extend type Query {
     program(id: ID!): Program
-    programs: [Program]
+    programs(filter: ProgramFilter): [Program]
   }
 
   extend type Mutation {

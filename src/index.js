@@ -4,7 +4,7 @@ import cors from 'cors'
 import jwt from 'jsonwebtoken'
 import {
   ApolloServer,
-  // AuthenticationError
+  // AuthenticationError,
 } from 'apollo-server-express'
 import { createServer } from 'http'
 import * as Promise from 'bluebird'
