@@ -30,7 +30,7 @@ export default gql`
 
   extend type Mutation {
     createMenuItem(input: MenuItemCreateInput): MenuItem
-    # editMenuItem(id: ID!, input: MenuItemEditInput): MenuItem
-    # deleteMenuItem(id: ID!): MenuItem
+    editMenuItem(_id: ID!, input: MenuItemEditInput): MenuItem
+    deleteMenuItem(_id: ID!): MenuItem
   }
 `

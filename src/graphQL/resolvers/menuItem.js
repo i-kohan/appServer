@@ -15,23 +15,14 @@ export default {
       const menuItem = await newMenuItem.save()
       return menuItem
     },
+    editMenuItem: async (root, { id, input }, { models: { MenuItem } }) => {
+      const editedMenuItem = await MenuItem.findOneAndUpdate({ id }, { $set: { ...input } })
+      return editedMenuItem
+      // pubsub.publish(EXERCISE_EDITED, { exerciseEdited: res })
+    },
+    deleteMenuItem: async (root, { _id }, { models: { MenuItem } }) => {
+      const removedMenuItem = await MenuItem.findOneAndRemove({ _id })
+      return removedMenuItem
+    },
   },
-  //   editExercise: (root, { id, input }) => {
-  //     return new Promise((resolve, reject) => {
-  //       Exercise.findOneAndUpdate({ id }, { $set: { ...input } }).exec(
-  //         (err, res) => {
-  //           pubsub.publish(EXERCISE_EDITED, { exerciseEdited: res })
-  //           err ? reject(err) : resolve(res)
-  //         }
-  //       )
-  //     })
-  //   },
-  //   deleteExercise: (root, args) => {
-  //     return new Promise((resolve, reject) => {
-  //       Exercise.findOneAndRemove(args).exec((err, res) => {
-  //         err ? reject(err) : resolve(res)
-  //       })
-  //     })
-  //   }
-  // },
 }
