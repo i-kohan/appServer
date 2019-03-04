@@ -5,6 +5,17 @@ export default gql`
     _id: ID!
     name: String!
     description: String
+    createdAt: Int
+  }
+
+  # type ExerciseCursor {
+  #   cursor: String!
+  #   exercises: [Exercise]!
+  # }
+
+  type ExercisesPagination {
+    exercises: [Exercise]
+    count: Int
   }
 
   input ExerciseCreateInput {
@@ -19,7 +30,7 @@ export default gql`
 
   extend type Query {
     exercise(id: ID!): Exercise
-    exercises: [Exercise]
+    exercises(page: Int, numberOfRows: Int): ExercisesPagination
   }
 
   extend type Mutation {

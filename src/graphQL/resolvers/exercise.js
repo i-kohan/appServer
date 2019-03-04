@@ -12,8 +12,16 @@ export default {
       return exercise
     },
     exercises: async (root, args, { models: { Exercise } }) => {
-      const programs = await Exercise.find({})
-      return programs
+      const exercises = await Exercise.find({})
+      const count = exercises.length
+      if ('page' in args && 'numberOfRows' in args) {
+        const { page, numberOfRows } = args
+        return {
+          exercises: exercises.slice(page * numberOfRows, page * numberOfRows + numberOfRows),
+          count,
+        }
+      }
+      return { exercises, count }
     },
   },
   Mutation: {
