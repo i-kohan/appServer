@@ -14,6 +14,7 @@ export default gql`
   # }
 
   type ExercisesPagination {
+    metadata: [String]
     exercises: [Exercise]
     count: Int
   }
@@ -30,7 +31,7 @@ export default gql`
 
   extend type Query {
     exercise(id: ID!): Exercise
-    exercises(page: Int, numberOfRows: Int): ExercisesPagination
+    exercises(page: Int, rowsPerPage: Int): ExercisesPagination
   }
 
   extend type Mutation {

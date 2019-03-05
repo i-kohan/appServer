@@ -12,16 +12,15 @@ export default {
       return exercise
     },
     exercises: async (root, args, { models: { Exercise } }) => {
-      const exercises = await Exercise.find({})
+      let exercises = await Exercise.find({})
+      const metadata = Object.keys(Exercise.schema.paths)
+      metadata.splice(-2)
       const count = exercises.length
-      if ('page' in args && 'numberOfRows' in args) {
-        const { page, numberOfRows } = args
-        return {
-          exercises: exercises.slice(page * numberOfRows, page * numberOfRows + numberOfRows),
-          count,
-        }
+      if ('page' in args && 'rowsPerPage' in args) {
+        const { page, rowsPerPage } = args
+        exercises = exercises.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       }
-      return { exercises, count }
+      return { exercises, count, metadata }
     },
   },
   Mutation: {
