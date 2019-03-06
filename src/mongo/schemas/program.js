@@ -18,7 +18,7 @@ const ProgramSchema = new Schema({
   isCustom: {
     type: Boolean,
   },
-})
+}, { timestamps: true })
 
 const Program = mongoose.model('Program', ProgramSchema)
 

@@ -1,6 +1,7 @@
 import { PubSub } from 'apollo-server'
-import { buildMongoConditionsFromFilters } from '@entria/graphql-mongo-helpers'
-import { programsMapping } from '../mappings'
+// import { buildMongoConditionsFromFilters } from '@entria/graphql-mongo-helpers'
+// import { programsMapping } from '../mappings'
+import { buildProgramsPageConfig } from '../pageConfigs'
 
 const pubsub = new PubSub()
 
@@ -14,9 +15,16 @@ export default {
       return program
     },
     programs: async (root, args, { models: { Program } }) => {
-      const filterResult = buildMongoConditionsFromFilters(null, args.filter, programsMapping)
-      const programs = await Program.find(filterResult.conditions)
-      return programs
+      // const filterResult = buildMongoConditionsFromFilters(null, args.filter, programsMapping)
+      // const programs = await Program.find(filterResult.conditions)
+      // return programs
+      let programs = await Program.find({})
+      const count = programs.length
+      if ('page' in args && 'rowsPerPage' in args) {
+        const { page, rowsPerPage } = args
+        programs = programs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+      }
+      return buildProgramsPageConfig(programs, count)
     },
   },
   Mutation: {
@@ -43,6 +51,16 @@ export default {
     },
     programEdited: {
       subscribe: () => pubsub.asyncIterator([PROGRAM_EDITED]),
+    },
+  },
+  Program: {
+    exercises: async (program, args, { models: { Exercise } }) => {
+      const ids = program.exercisesIds
+      const exercises = await ids.map(async (id) => {
+        const exercise = await Exercise.findById(id)
+        return exercise
+      })
+      return exercises
     },
   },
 }

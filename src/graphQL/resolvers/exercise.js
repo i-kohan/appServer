@@ -1,4 +1,5 @@
 import { PubSub } from 'apollo-server'
+import { buildExercisesPageConfig } from '../pageConfigs'
 
 const pubsub = new PubSub()
 
@@ -13,14 +14,12 @@ export default {
     },
     exercises: async (root, args, { models: { Exercise } }) => {
       let exercises = await Exercise.find({})
-      const metadata = Object.keys(Exercise.schema.paths)
-      metadata.splice(-2)
       const count = exercises.length
       if ('page' in args && 'rowsPerPage' in args) {
         const { page, rowsPerPage } = args
         exercises = exercises.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
       }
-      return { exercises, count, metadata }
+      return buildExercisesPageConfig(exercises, count)
     },
   },
   Mutation: {
@@ -47,5 +46,8 @@ export default {
     exerciseEdited: {
       subscribe: () => pubsub.asyncIterator([EXERCISE_EDITED]),
     },
+  },
+  Exercise: {
+    id: exercise => exercise._id,
   },
 }

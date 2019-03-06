@@ -2,10 +2,11 @@ import { gql } from 'apollo-server-express'
 
 export default gql`
   type Exercise {
-    _id: ID!
+    id: ID!
     name: String!
     description: String
-    createdAt: Int
+    createdAt: String
+    updatedAt: String
   }
 
   # type ExerciseCursor {
@@ -14,9 +15,14 @@ export default gql`
   # }
 
   type ExercisesPagination {
-    metadata: [String]
-    exercises: [Exercise]
+    metadata: ExercisesMetadata
+    data: [Exercise]
+  }
+
+  type ExercisesMetadata {
+    accessor: String
     count: Int
+    rowsToShow: [String]
   }
 
   input ExerciseCreateInput {

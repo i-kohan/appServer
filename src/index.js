@@ -55,7 +55,7 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: async ({ req }) => {
-    const token = req.headers.authorization || ''
+    const token = (req && req.headers.authorization) || ''
     const user = await getUser(token)
     // if (!user) {
     //   throw new AuthenticationError('You must be logged in!')

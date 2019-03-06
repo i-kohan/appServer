@@ -2,11 +2,24 @@ import { gql } from 'apollo-server-express'
 
 export default gql`
   type Program {
-    _id: ID!
+    id: ID!
     name: String!
     description: String!
-    exercisesIds: [ID!]!
+    exercises: [Exercise]
     isCustom: Boolean
+    createdAt: String
+    updatedAt: String
+  }
+
+  type ProgramsPagination {
+    metadata: ProgramsMetadata
+    data: [Program]
+  }
+
+  type ProgramsMetadata {
+    accessor: String
+    count: Int
+    rowsToShow: [String]
   }
 
   input ProgramFilter {
@@ -28,7 +41,7 @@ export default gql`
 
   extend type Query {
     program(id: ID!): Program
-    programs(filter: ProgramFilter): [Program]
+    programs(filter: ProgramFilter, page: Int, rowsPerPage: Int): ProgramsPagination
   }
 
   extend type Mutation {
