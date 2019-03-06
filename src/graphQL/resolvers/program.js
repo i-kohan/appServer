@@ -62,5 +62,6 @@ export default {
       })
       return exercises
     },
+    id: program => program._id,
   },
 }

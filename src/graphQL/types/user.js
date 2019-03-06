@@ -1,34 +1,43 @@
 import { gql } from 'apollo-server-express'
 
 export default gql`
-    type User {
-        _id: ID!,
-        email: String!,
-        username: String!,
-        jwt: String!
-    }
+  type User {
+    id: ID!,
+    email: String!,
+    username: String!,
+    jwt: String!
+    subscriptions: [User]
+    favoriteExercises: [Exercise]
+    favoritePrograms: [Program]
+  }
 
-    extend type Query {
-        currentUser: User
-    }
+  input UserLoginInput {
+    password: String!, username: String!
+  }
 
-    input UserLoginInput {
-      password: String!, username: String!
-    }
+  input UserSignupInput {
+    username: String!
+    password: String!
+    email: String!
+  }
 
-    input UserSignupInput {
-      username: String!
-      password: String!
-      email: String!
-    }
+  input UserEditInput {
+    subscriptionsId: ID
+    favoriteExerciseId: ID
+    favoriteProgramId: ID
+  }
 
-    extend type Mutation {
-        login(input: UserLoginInput!): User
-        signup(input: UserSignupInput!): User
-    }
-    
-    schema {
-        query: Query,
-        mutation: Mutation,
-    }
+  extend type Query {
+    currentUser: User
+    users: [User]
+  }
+
+  extend type Mutation {
+    login(input: UserLoginInput!): User
+    signup(input: UserSignupInput!): User
+    editUser(id: ID!, input: UserEditInput!): User
+    addExerciseToFavorite(exerciseId: ID!): User
+    addProgramToFavorite(programId: ID!): User
+    subscribeToUser(userId: ID!): User
+  }
 `

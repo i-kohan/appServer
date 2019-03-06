@@ -15,6 +15,15 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
+  favoriteExerciseIds: {
+    type: Array,
+  },
+  favoriteProgramIds: {
+    type: Array,
+  },
+  subscriptions: {
+    type: Array,
+  },
 })
 
 const User = mongoose.model('User', UserSchema)
