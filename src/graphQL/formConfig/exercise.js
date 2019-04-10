@@ -15,7 +15,7 @@ export default {
         {
           lable: 'Fill description of exercise',
           inputs: [{
-            accessor: 'desctiption',
+            accessor: 'description',
             fieldType: 'text',
             initialValue: '',
             validation: 'empty',
