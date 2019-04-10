@@ -1,5 +1,6 @@
 import { PubSub } from 'apollo-server'
 import { buildExercisesPageConfig } from '../pageConfigs'
+import ExerciseCreationFormConfig from '../formConfig/exercise'
 
 const pubsub = new PubSub()
 
@@ -21,6 +22,7 @@ export default {
       }
       return buildExercisesPageConfig(exercises, count)
     },
+    exerciseCreationForm: () => ExerciseCreationFormConfig,
   },
   Mutation: {
     createExercise: async (root, { input }, { models: { Exercise } }) => {

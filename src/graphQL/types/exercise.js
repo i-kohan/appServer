@@ -35,9 +35,14 @@ export default gql`
     description: String
   }
 
+  type ExerciseCreationForm {
+    fields: [Stepper]
+  }
+
   extend type Query {
     exercise(id: ID!): Exercise
     exercises(page: Int, rowsPerPage: Int): ExercisesPagination
+    exerciseCreationForm: ExerciseCreationForm
   }
 
   extend type Mutation {
